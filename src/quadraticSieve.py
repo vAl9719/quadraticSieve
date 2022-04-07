@@ -1,3 +1,4 @@
+from tkinter import YView
 from factorBaseB import findOptimalB
 from findBSmoothValues import findBSmoothValues
 from findSquareCombination import findSquareCombination
@@ -22,9 +23,14 @@ def findAB(candidateList):
     return 0, 0
 
 
-def inversesModN(a, b):
+def inversesModN(a, b): # If a = +-b (mod n), try again
     return False
 
 
 def gcd(x, y):
-    return 1
+    r = x % y 
+    if (r == 0):
+        return y
+    else:
+        return gcd(y, r)
+    
