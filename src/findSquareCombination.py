@@ -47,15 +47,7 @@ def findSquareCombination(BSmoothList):
     cols = len(BSmoothList_rref[0])
 
     return nullspace
-
-    #extract the combination
-    #for i in range(len(BSmoothList_rref)):
-    #   for j in range(len(BSmoothList_rref)):
-            #somehow detect a dependency - multiple 1s in a row?
-            #return that row? or trnaslate it to the numbers they correspond to
-    #        print("penis")
-
-
+    
     #the column dependencies in a row will give which values may give a solution
     #current goal: how to translate rref matrix to the values?
 
