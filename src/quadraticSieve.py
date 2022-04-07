@@ -15,7 +15,7 @@ def quadraticSieve(n: int):
     while True:
         candidateList = findSquareCombination(BSmoothList)
         a, b = findAB(candidateList)
-        if not inversesModN(a, b):
+        if not inversesModN(a, b, n):
             return gcd(a - b, n)
 
 
@@ -23,7 +23,10 @@ def findAB(candidateList):
     return 0, 0
 
 
-def inversesModN(a, b): # If a = +-b (mod n), try again
+def inversesModN(x,y, n): # If a = +-b (mod n), try again
+    if((x-y)%n == 0 or (x+y)%n == 0):
+        print("x and y are congruent mod n, try again")
+        return True 
     return False
 
 
