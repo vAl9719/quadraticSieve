@@ -19,7 +19,7 @@ def quadraticSieve(n: int):
             return gcd(a - b, n)
 
 
-def findAB(candidateList):
+def findAB(candidateList): 
     return 0, 0
 
 

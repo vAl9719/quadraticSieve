@@ -33,23 +33,34 @@ def clear_zeros(A):
 #what to return - a linear combination of these vectors or two candidates? return x and y?
 def findSquareCombination(BSmoothList):
     # assume BSmoothList is not transposed
-    BSmoothList = BSmoothList.transpose()
+    M = Matrix(BSmoothList)
+    M = M.transpose()
 
     #linear algebra - row reduce using sympy
-    BSmoothList_rref = BSmoothList.rref()[0]
+    BSmoothList_rref = M.rref()[0]
     # BSmoothList_rref = clear_zeros(BSmoothList_rref)
+
+    print(BSmoothList_rref)
 
     # returns the nullspace and therefore the numbers that may give a dependency
     # will probably want to have a separate array that contains the BSmoothnumbers to correspond to 
     nullspace = BSmoothList_rref.nullspace() 
+    print(nullspace)
+
+    for i in range (0,len(nullspace)): 
+        nullspace[i] = nullspace[i]%2
 
     rows = len(BSmoothList_rref)
     cols = len(BSmoothList_rref[0])
 
     return nullspace
-    
+
+    #solution_nums = [smooth_nums[i] for i in solution_vec]
+    #idea is that if nullspace != 0 at index i, then smooth_nums[i] is a potential solution
+
     #the column dependencies in a row will give which values may give a solution
     #current goal: how to translate rref matrix to the values?
+    #or adjust code as needed for specific cases - this feels a bit too straightforward? 
 
 
     
