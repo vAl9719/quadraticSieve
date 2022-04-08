@@ -21,7 +21,7 @@ def quadraticSieve(n: int):
 
 
 
-def findAB(candidateList): 
+def findAB(candidateList, nullspace): 
     return 0, 0
 
 
