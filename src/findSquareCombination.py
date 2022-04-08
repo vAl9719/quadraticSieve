@@ -18,23 +18,22 @@ def clear_zeros(A):
     A = A[~np.all(A == 0, axis=1)]
 
 
+# input BSmoothList: a 2D array where [x][y] represents the exponent of the yth prime factor of x (b-smooth)
+# output nullspace: the nullspace of BSmoothList, AKA a subsequence of b smooth numbers that has a product square
+# gaussian elimination can be a bottleneck but is often not a problem since the matrix is sparce
+# however there are faster implementations, but here we use sympy to row reduce and find the null space of a matrix
+# faster implementation can be implemented referencing (papers)
 
-
-# Alyssa - Use mod 2 linear algebra (Gaussian elimination) on exponents 
-# to find products of these x’s that is a square (zero vector)
-
-# Find more smooth values of x^2 - n, find a new linear dependency - how?
-# Otherwise, take gcd(a - b, n) to get a nontrivial factor
-
-# input BSmoothList: a 2D array where [x][y] represents the exponent of the yth prime factor of x (b-smooth), this should be mod 2
-# output a list of potential candidates for a and b? Or just a and b themselve s.t. there is a linear dependency
-#list[x][y] exponent of the yth prime factor of x
-#reduce mod 2 then gaussian elimination 
-#what to return - a linear combination of these vectors or two candidates? return x and y?
 def findSquareCombination(BSmoothList):
+
     # assume BSmoothList is not transposed
     M = Matrix(BSmoothList)
     M = M.transpose()
+
+    # assume matrix is not mod 2, mod 2 all elements 
+    for i in range (0,len(M)): 
+        for j in range (0, len(M[0])):
+            M[i][j] = M[i][j] % 2
 
     #linear algebra - row reduce using sympy
     BSmoothList_rref = M.rref()[0]
@@ -43,7 +42,7 @@ def findSquareCombination(BSmoothList):
     print(BSmoothList_rref)
 
     # returns the nullspace and therefore the numbers that may give a dependency
-    # will probably want to have a separate array that contains the BSmoothnumbers to correspond to 
+    # each nonzero value corresponds to a number in the BSmooth numbers list
     nullspace = BSmoothList_rref.nullspace() 
     print(nullspace)
 
