@@ -17,7 +17,7 @@ def findOptimalB(n: int) -> int:
     return math.ceil(math.exp(math.sqrt(math.log(n) * math.log(math.log(n))))**(math.sqrt(2)/4))
 
 
-def factorBase(B: int) -> list[int]:
+def findFactorBase(B: int) -> list[int]:
     # Input integer B, returns all primes up to B
 
     return [0]
