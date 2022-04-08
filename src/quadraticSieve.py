@@ -12,11 +12,7 @@ Main quadratic sieve algorithm
 def quadraticSieve(n: int):
     B = findOptimalB(n)
     factorBaseValues = factorBase(B)
-<<<<<<< HEAD
     candidates, squaredFactorizations = findBSmoothValues(n, factorBaseValues)
-=======
-    BSmoothList = findBSmoothValues(n, factorBaseValues)
->>>>>>> ba51e6f24f205162e189353a07523c07ada857d1
     while True:
         nullspace = findSquareCombination(squaredFactorizations)
         a, b = findAB(candidates, nullspace)
