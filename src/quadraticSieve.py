@@ -14,8 +14,8 @@ def quadraticSieve(n: int):
     factorBase = findFactorBase(B)
     BSmoothList = findBSmoothValues(n, factorBase)
     while True:
-        candidateList = findSquareCombination(BSmoothList)
-        a, b = findAB(candidateList)
+        candidates, squaredFactorizations = findSquareCombination(BSmoothList)
+        a, b = findAB(candidates)
         if not inversesModN(a, b, n):
             return gcd(a - b, n)
 

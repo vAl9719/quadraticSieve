@@ -6,17 +6,17 @@ import math
 
 def findBSmoothValues(n: int, factorBase: list[int]) -> (list[int], list[list[int]]):
     candidates = []
-    factorizations = []
+    squaredFactorizations = []
 
     x = math.ceil(math.sqrt(n))
     while len(candidates) < len(factorBase) + 1:
         factors = factorize((x*x) % n, factorBase)
         if factors[0]:
             candidates.append(x)
-            factorizations.append(factors[1])
+            squaredFactorizations.append(factors[1])
         x += 1
 
-    return candidates, factorizations
+    return candidates, squaredFactorizations
 
 
 def factorize(x: int, factorBase: list[int]) -> (bool, list[int]):
