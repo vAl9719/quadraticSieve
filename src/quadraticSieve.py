@@ -1,5 +1,5 @@
 from tkinter import YView
-from factorBaseB import findOptimalB
+from factorBaseB import findOptimalB, findFactorBase
 from findBSmoothValues import findBSmoothValues
 from findSquareCombination import findSquareCombination
 import util
@@ -11,10 +11,11 @@ Main quadratic sieve algorithm
 
 def quadraticSieve(n: int):
     B = findOptimalB(n)
-    BSmoothList = findBSmoothValues(n, B)
+    factorBase = findFactorBase(B)
+    BSmoothList = findBSmoothValues(n, factorBase)
     while True:
-        candidateList = findSquareCombination(BSmoothList)
-        a, b = findAB(candidateList)
+        candidates, squaredFactorizations = findSquareCombination(BSmoothList)
+        a, b = findAB(candidates)
         if not inversesModN(a, b, n):
             return gcd(a - b, n)
 
