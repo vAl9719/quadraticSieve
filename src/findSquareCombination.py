@@ -102,10 +102,12 @@ def determineSolVector(M_rref, vec, indices):
 # however there are faster implementations, but here we use sympy to row reduce and find the null space of a matrix
 # faster implementation can be implemented referencing (papers)
 
-def findSquareCombination(BSmoothList):
+def findSquareCombination(BSmoothListOriginal):
+    BSmoothList = [[x for x in col] for col in BSmoothListOriginal]
+
     print("matrix is, ", BSmoothList)
     # assume matrix is not mod 2, mod 2 all elements 
-    for i in range (0,len(BSmoothList)): 
+    for i in range (0,len(BSmoothList)):
         for j in range (0, len(BSmoothList[0])):
             BSmoothList[i][j] = BSmoothList[i][j] % 2
     

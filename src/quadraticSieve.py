@@ -10,33 +10,31 @@ Main quadratic sieve algorithm
 
 
 def quadraticSieve(n: int):
-    B = findOptimalB(n) 
+    B = findOptimalB(n)
     factorBaseValues = factorBase(B)
     candidates, squaredFactorizations = findBSmoothValues(n, factorBaseValues)
     vec, indices, sol, BSmoothList_rref = findSquareCombination(squaredFactorizations)
     print("candidates: ", candidates)
+    print("squared factorizations", squaredFactorizations)
+
+    sol = [1, 0, 0, 0, 0]
 
     #initial values
-    x = multiplyAll(sol, candidates)
-    xsq = x*x % n
-    # do we need this actually
-    # ysq = factorize(xsq, factorBaseValues) 
-    y = squareRoot(x) % n 
+    a = multiplyAll(sol, candidates, n)
+    b = findB(sol, squaredFactorizations, factorBaseValues, n)
 
-    while inversesModN(x, y, n):
+    while inversesModN(a, b, n):
         # x and y are congruent, find a different combination
         vec = findCombs(vec)
         sol = determineSolVector(BSmoothList_rref, vec, indices)
-        x = multiplyAll(sol, candidates)
-        xsq = x*x % n
-        #ysq = factorize(xsq, factorBase)
-        y = squareRoot(xsq)
+        a = multiplyAll(sol, candidates, n)
+        b = findB(sol, squaredFactorizations, factorBaseValues, n)
     
-    print("Found x: ", x)
-    print("Found y: ", y)
+    print("Found a: ", a)
+    print("Found b: ", b)
 
-    factor1 = gcd(x-y, n)
-    factor2 = n/factor1
+    factor1 = gcd(a-b, n)
+    factor2 = n//factor1
 
     print("First factor: ", factor1)
     print("Second factor: ", factor2)
@@ -45,14 +43,31 @@ def quadraticSieve(n: int):
 
 # input: v, a vector of 1s and 0s, and a list of nums to multiply
 # output: the product
-def multiplyAll(v, nums):
+def multiplyAll(v, nums, n):
     product = 1
     for i in range(0, len(nums)):
         if v[i] == 0:
             continue
-        product = product * nums[i]
+        product = (product * nums[i]) % n
     
     return product
+
+
+# input: sol (indicator list of candidates used), squaredFactorizations (exponents of
+# prime factorization of candidates squared)
+# output: corresponding y value
+def findB(sol, squaredFactorizations, factorBaseValues, n):
+    yFactors = [0 for _ in range(len(factorBaseValues))]
+    for i, used in enumerate(sol):
+        if used == 1:
+            for j, e in enumerate(squaredFactorizations[i]):
+                yFactors[j] += squaredFactorizations[i][j]
+
+    y = 1
+    for i in range(len(yFactors)):
+        y = (y * int(math.pow(factorBaseValues[i], yFactors[i] // 2))) % n
+    return y
+
 
 #input: a number to be square rooted
 #output: the square root of a number
