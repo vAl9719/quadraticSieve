@@ -17,15 +17,17 @@ def quadraticSieve(n: int):
     possible = findPossible(candidates, nullspace)
 
     #initial values
-    x = multiplyAll(v, possible)
+    x = multiplyAll(sol, possible)
     xsq = x*x % n
-    ysq = factorize(xsq, factorBaseValues)
-    y = squareRoot(ysq)
+    # do we need this actually
+    # ysq = factorize(xsq, factorBaseValues) 
+    y = squareRoot(x) % n 
 
     while inversesModN(x, y, n):
         # x and y are congruent, find a different combination
         vec = findCombs(vec)
-        v = determineSolVector(BSmoothList_rref, vec, indices)
+        sol = determineSolVector(BSmoothList_rref, vec, indices)
+        x = multiplyAll(sol, possible)
         xsq = x*x % n
         ysq = factorize(xsq, factorBase)
         y = squareRoot(ysq)
