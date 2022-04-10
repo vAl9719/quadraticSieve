@@ -21,16 +21,15 @@ def clear_zeros(A):
 # output: vec, the current combination of potential values where a 
 # 1 represents which candidates are being used
 # and indices, an array of indices of candidates in the nullspace
-def setArray(nullspace):
-    v = []
+def setArray(matrix):
+    v = np.ones(len(matrix[0]), dtype = 'int')
     
-    #translate nullspace to an array for easier use
-    for i in range(0, len(nullspace[0])):
-        if nullspace[0][i] != 0:
-            v.append(1)
-        else:
-            v.append(0)
-    
+    for i in range(0, len(matrix)):
+        for j in range(0, len(matrix[0])):
+            if(matrix[i][j] == 1):
+                v[j] = 0
+                break
+    print("v: ", v)
     #sum of 1s in the array
     sum = np.sum(v)
     #vec represents the current combination 
@@ -38,12 +37,16 @@ def setArray(nullspace):
     vec[sum-1] = 1 #here it's just only the last index 
     
     #set up the indices of candidates in the nullspace 
-    indices = []
-    for i in range(0, len(nullspace[0])):
+    indices = np.zeros(sum, dtype='int')
+
+    # print(len(matrix[0]))
+    k = 0
+    for i in range(0, len(matrix[0])):
         if(v[i] == 1):
-            indices.append(i)
+            indices[k] = i
+            k = k+1
     
-    print(indices)
+    # print("indices is, ", indices)
             
     return [vec, indices]
 
@@ -100,36 +103,46 @@ def determineSolVector(M_rref, vec, indices):
 # faster implementation can be implemented referencing (papers)
 
 def findSquareCombination(BSmoothList):
-
+    print("matrix is, ", BSmoothList)
+    # assume matrix is not mod 2, mod 2 all elements 
+    for i in range (0,len(BSmoothList)): 
+        for j in range (0, len(BSmoothList[0])):
+            BSmoothList[i][j] = BSmoothList[i][j] % 2
+    
+    print("mod 2 matrix is, ", BSmoothList)
     # assume BSmoothList is not transposed
     M = Matrix(BSmoothList)
     M = M.transpose()
 
-    # assume matrix is not mod 2, mod 2 all elements 
-    for i in range (0,len(M)): 
-        for j in range (0, len(M[0])):
-            M[i][j] = M[i][j] % 2
 
     #linear algebra - row reduce using sympy
-    BSmoothList_rref = M.rref()[0]
-    # BSmoothList_rref = clear_zeros(BSmoothList_rref)
+    
+    BSmoothList_rref = np.array(M.rref()[0])%2
 
-    print(BSmoothList_rref)
+    print("rref is, ", BSmoothList_rref)
+
+    #BSmoothList_rref = clear_zeros(BSmoothList_rref)
 
     # returns the nullspace and therefore the numbers that may give a dependency
     # each nonzero value corresponds to a number in the BSmooth numbers list
-    nullspace = BSmoothList_rref.nullspace() 
-    print(nullspace)
+    #nullspace = BSmoothList_rref.nullspace() 
+    #print("nullspace is, ", nullspace)
 
-    for i in range (0,len(nullspace)): 
-        nullspace[i] = nullspace[i]%2
+    #for i in range (0,len(nullspace)): 
+    #    nullspace[i] = nullspace[i]%2
 
     # calc initial vectors
 
-    vec, indices = setArray(nullspace)
+    vec, indices = setArray(BSmoothList_rref)
     sol = determineSolVector(BSmoothList_rref, vec, indices)
+    vec = findCombs(vec)
+    sol = determineSolVector(BSmoothList_rref, vec, indices)
+    vec = findCombs(vec)
+    sol = determineSolVector(BSmoothList_rref, vec, indices)
+    print("vec", vec)
+    print("sol", sol)
 
-    return vec, indices, sol, nullspace, BSmoothList_rref
+    return vec, indices, sol, BSmoothList_rref
 
     #solution_nums = [smooth_nums[i] for i in solution_vec]
     #idea is that if nullspace != 0 at index i, then smooth_nums[i] is a potential solution

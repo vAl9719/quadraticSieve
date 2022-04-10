@@ -13,11 +13,11 @@ def quadraticSieve(n: int):
     B = findOptimalB(n) 
     factorBaseValues = factorBase(B)
     candidates, squaredFactorizations = findBSmoothValues(n, factorBaseValues)
-    vec, indices, sol, nullspace, BSmoothList_rref = findSquareCombination(squaredFactorizations)
-    possible = findPossible(candidates, nullspace)
+    vec, indices, sol, BSmoothList_rref = findSquareCombination(squaredFactorizations)
+    print("candidates: ", candidates)
 
     #initial values
-    x = multiplyAll(sol, possible)
+    x = multiplyAll(sol, candidates)
     xsq = x*x % n
     # do we need this actually
     # ysq = factorize(xsq, factorBaseValues) 
@@ -27,15 +27,15 @@ def quadraticSieve(n: int):
         # x and y are congruent, find a different combination
         vec = findCombs(vec)
         sol = determineSolVector(BSmoothList_rref, vec, indices)
-        x = multiplyAll(sol, possible)
+        x = multiplyAll(sol, candidates)
         xsq = x*x % n
-        ysq = factorize(xsq, factorBase)
-        y = squareRoot(ysq)
+        #ysq = factorize(xsq, factorBase)
+        y = squareRoot(xsq)
     
     print("Found x: ", x)
     print("Found y: ", y)
 
-    factor1 = gcd(math.abs(x-y), n)
+    factor1 = gcd(x-y, n)
     factor2 = n/factor1
 
     print("First factor: ", factor1)
@@ -47,10 +47,10 @@ def quadraticSieve(n: int):
 # output: the product
 def multiplyAll(v, nums):
     product = 1
-    for i in range(0, len(v)):
+    for i in range(0, len(nums)):
         if v[i] == 0:
             continue
-        product=  product * nums[i]
+        product = product * nums[i]
     
     return product
 
@@ -77,14 +77,13 @@ def squareRoot(num):
             return mid
     return mid + 1    
 
-def findPossible(candidates, nullspace):
+def findPossible(candidates, vec):
     possible = []
-    for i in range(0, len(nullspace[0])):
-        if nullspace[0][i] != 0:
+    for i in range(0, len(vec)):
+        if vec[i] != 0:
             possible.append(candidates[i])
 
-def findAB(candidateList, nullspace): 
-    return 0, 0
+    return possible
 
 
 def inversesModN(x,y, n): # If a = +-b (mod n), try again
@@ -101,3 +100,4 @@ def gcd(x, y):
     else:
         return gcd(y, r)
     
+quadraticSieve(87463)
