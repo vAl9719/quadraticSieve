@@ -13,20 +13,25 @@ def quadraticSieve(n: int):
     B = findOptimalB(n)
     factorBaseValues = factorBase(B)
     candidates, squaredFactorizations = findBSmoothValues(n, factorBaseValues)
-    vec, indices, sol, BSmoothList_rref = findSquareCombination(squaredFactorizations)
+    nullspace = findSquareCombination(squaredFactorizations)
     print("candidates: ", candidates)
     print("squared factorizations", squaredFactorizations)
+    
+    index = 0
+    comb, sol = retrieveCombination(nullspace, index, candidates)
 
-    sol = [1, 0, 0, 0, 0]
-
+    #sol = [0, 0, 0, 0, 1]
+    # works if sol is correct, so the function somewhere in findSquareComb is wrong
+    # how to properly obtain sol from the rref? use nullspace to obtain possibilities? 
     #initial values
+    # sol = [0, 1, 0, 0, 1]
     a = multiplyAll(sol, candidates, n)
     b = findB(sol, squaredFactorizations, factorBaseValues, n)
 
     while inversesModN(a, b, n):
         # x and y are congruent, find a different combination
-        vec = findCombs(vec)
-        sol = determineSolVector(BSmoothList_rref, vec, indices)
+        index = index + 1
+        comb, sol = retrieveCombination(nullspace, index, candidates)
         a = multiplyAll(sol, candidates, n)
         b = findB(sol, squaredFactorizations, factorBaseValues, n)
     
@@ -52,6 +57,17 @@ def multiplyAll(v, nums, n):
     
     return product
 
+def retrieveCombination(nullspace, index, candidates):
+    comb = []
+    vector = []
+    if index >= len(nullspace):
+        print("No more combinations")
+        quit()
+    else:
+        for i in range(len(nullspace[0])):
+            vector.append(nullspace[index][i])
+    
+    return comb, vector 
 
 # input: sol (indicator list of candidates used), squaredFactorizations (exponents of
 # prime factorization of candidates squared)
@@ -103,7 +119,7 @@ def findPossible(candidates, vec):
 
 def inversesModN(x,y, n): # If a = +-b (mod n), try again
     if((x-y)%n == 0 or (x+y)%n == 0):
-        print("x and y are congruent mod n, try again")
+        print("a and b are congruent mod n, try again")
         return True 
     return False
 
@@ -115,4 +131,6 @@ def gcd(x, y):
     else:
         return gcd(y, r)
     
-quadraticSieve(87463)
+quadraticSieve(2664316859)
+# works for some 12 digits numbers, but not all
+#number that didn't work but has factors: 8661028960343 (1121317*7723979)
