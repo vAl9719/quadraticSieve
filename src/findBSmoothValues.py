@@ -5,7 +5,10 @@ import math
 import time
 from random import choices, seed
 
-
+# input: a number n and a factor base of primes chosen by a bound B
+# output: a list of candidates such that x^2 is B-smooth and their prime factorizations of x^2
+# here we prime factorize a number x^2 and see if its prime factors are less than or equal to B
+# or in the factor base given
 def findBSmoothValues(n: int, factorBase):
     # print(factorBase)
     start = time.time()
@@ -29,71 +32,11 @@ def findBSmoothValues(n: int, factorBase):
     # print('Time:', time.time() - start)
     return candidates, squaredFactorizations
 
-
-# def findBSmoothValuesFast(n: int, factorBase):
-#     start = time.time()
-#     candidates = []
-#     squaredFactorizations = []
-#
-#     numThreads = 10
-#     sections = [i + 1 for i in range(numThreads)]
-#     threads = []
-#
-#     while len(candidates) < len(factorBase) + 1:
-#         for i in range(numThreads):
-#             threads.append(Thread(target=findBsmoothSection, args=(n, sections[i], factorBase, candidates, squaredFactorizations)))
-#             threads[i].start()
-#         for i in range(numThreads):
-#             threads[i].join()
-#         threads = []
-#         for i in range(numThreads):
-#             sections[i] += numThreads
-#
-#     print(time.time() - start)
-#     return candidates, squaredFactorizations
-#
-#
-# def findBsmoothSection(n, section, factorBase, candidates, squaredFactorizations):
-#     lowerBound, upperBound = math.ceil(math.sqrt(section * n)), math.ceil(math.sqrt((section + 1) * n))
-#     xsSquared = [(lowerBound + i) * (lowerBound + i) % n for i in range(upperBound - lowerBound)]
-#     factors = [[0 for _ in range(len(factorBase))] for i in range(len(xsSquared))]
-#
-#     # print('Bounds:', lowerBound, upperBound, section)
-#     # print('Squares', xsSquared)
-#     # print('Section', section)
-#     for pIndex, prime in enumerate(factorBase):
-#         residues = solveSquaresModP(n, prime, section)
-#         x = math.ceil(lowerBound / prime) * prime
-#         # print('Prime:', prime, 'Residues:', residues)
-#         while x < upperBound:
-#             index = x - lowerBound
-#             for offset in residues:
-#                 # print('3:', index + offset)
-#                 if x + offset >= upperBound:
-#                     break
-#                 if xsSquared[index + offset] % prime != 0:
-#                     # print('uh oh')
-#                     return
-#                 while xsSquared[index + offset] % prime == 0:
-#                     xsSquared[index + offset] //= prime
-#                     factors[index + offset][pIndex] += 1
-#                     if xsSquared[index + offset] == 1:
-#                         candidates.append(x + offset)
-#                         squaredFactorizations.append(factors[index + offset])
-#             x += prime
-#             # print('Squares:', xsSquared, factors)
-#     section += 1
-#     lowerBound, upperBound = math.ceil(math.sqrt(section * n)), math.ceil(math.sqrt((section + 1) * n))
-#     for i in range(upperBound - lowerBound):
-#         xsSquared[i] = (lowerBound + i) * (lowerBound + i) % n
-#     for i in range(len(xsSquared)):
-#         for j in range(len(factorBase)):
-#             factors[i][j] = 0
-#
-#     return candidates, squaredFactorizations
-
-
-
+# input: a number x, a factor base of primes, and a list that represents the factors
+# output: the factors of x if it has prime factors in the factorBase
+# here we enumerate through the factor base and see if they divide x and how
+# they divide x. if the factor base does not fully divide x (x is not equal to 1)
+# then x is not B-smooth and we return false with an empty array.
 def factorize(x: int, factorBase, factorList):
     for i, prime in enumerate(factorBase):
         if x == 1:
@@ -107,16 +50,8 @@ def factorize(x: int, factorBase, factorList):
     factors = [e for e in factorList]
     return True, (factors)
 
-
-# def solveSquaresModP(n, p, section):
-#     n = n % p
-#     for x in range(p):
-#         if (x*x - section * n) % p == 0:
-#             if x == 0 or x == p - x:
-#                 return (x,)
-#             return x, p - x
-#     return tuple()
-
+# input: all of the candidates and factorizations, and a count of numbers we want
+# output: the selected candidates and factorizations from the input list
 
 def selectCandidates(allCandidates, allSquaredFactorizations, count):
     selection = choices([i for i in range(len(allCandidates))], k=count)
