@@ -45,7 +45,7 @@ def findSquareCombination(BSmoothListOriginal):
             nullspace[i][j] = nullspace[i][j]%2
 
     nullspace = np.array(nullspace)
-    print("nullspace is, ", nullspace)
+    # print("nullspace is, ", nullspace)
 
     #for i in range(0, len(nullspace[0])):
     #    print("element in nullspace, ", nullspace[0][i]) # from nullspace, try and grab the right combination
